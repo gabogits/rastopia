@@ -1,0 +1,61 @@
+@media (max-width: 600px) {
+  .cards-2 {
+    grid-template-columns: 100%;
+  }
+  nav .user-private ul li {
+    margin: 0 0 0 27px;
+  }
+  nav .user-private ul li:last-of-type {
+    margin: 0 0 0 15px;
+  }
+  .perfil-menu strong {
+    display: none;
+  }
+  .cart-section {
+    width: 100%;
+  }
+
+  .cart-section-inner:before {
+    right: 39px;
+  }
+  .modal-box {
+    top: 20vh;
+  }
+  .medium-size {
+    max-width: 92%;
+  }
+}
+
+@media (max-width: 380px) {
+  .banner-txt {
+    padding: 20px 15px;
+  }
+  .actions-user {
+    display: initial;
+  }
+  .delete-btn {
+    margin: 0 0 40px;
+    width: 100%;
+  }
+
+  nav .user-public ul li {
+    margin: 0 0 0 20px;
+  }
+  .box-btns .btn-small {
+    margin: 0 10px 0 0;
+  }
+  .banner-txt h2 br {
+    display: block;
+  }
+  .banner-txt h2 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
+@media (max-width: 345px) {
+  .box-btns .btn-small {
+    margin: 0 0px 10px 0;
+    width: 100%;
+  }
+}

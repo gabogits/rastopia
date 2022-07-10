@@ -1,0 +1,115 @@
+@media (max-width: 1200px) {
+  .container {
+    max-width: 94%;
+  }
+
+  .banner {
+    background: #dce1dd url("../images/11.jpg") no-repeat 0px 0px;
+    height: 550px;
+    background-size: 110% auto;
+  }
+  .cards-home .cards-section .cards-section-inner {
+    display: inherit;
+  }
+  .cards-4 {
+    grid-template-columns: inherit;
+  }
+  .cards-section .cards-section-inner {
+    display: grid;
+    grid-template-columns: 48% 48%;
+  }
+  .cards-home .cards-section-inner .card-item {
+    width: 50%;
+    display: inline-block;
+  }
+
+  .cards-home .cards-section-inner .card-item-txt {
+    padding: 20px 20px;
+  }
+
+  .simple-section-content .box-title {
+    margin: 40px 20px;
+  }
+
+  .simple-section-content .box-title h3 {
+    font-size: 14px;
+  }
+  .simple-section-content .box-title h4 {
+    font-size: 14px;
+  }
+  .simple-section-content .box-title p {
+    font-size: 14px;
+  }
+  .table-list {
+    max-width: 550px;
+    margin: 0 auto;
+  }
+  .table-list .table-head,
+  .table-list .table-content {
+    display: inherit;
+    grid-template-columns: inherit;
+    padding: 0px 40px;
+  }
+  .table-list .table-content > li {
+    margin: 0 0 20px;
+    padding: 0 0 20px;
+
+}
+
+.table-list .table-content > li:nth-child(even) {
+
+   padding:20px;
+}
+
+.table-list .table-content > li:nth-child(odd) {
+   background: #eaeaea;
+   padding:20px;
+    
+}
+
+
+.table-list .table-content > li:last-of-type {
+   background: none;
+ border-top:solid 1px #eaeaea;
+}
+
+  .table-list .table-head {
+    display: none;
+  }
+  .table-list .table-content > li .cell {
+    display: block;
+  }
+  .table-list .table-content > li .cell strong {
+    display: block;
+  }
+  .table-list .table-content > li .cell {
+    display: grid;
+    grid-template-columns: 50% 50%;
+  }
+  .table-list .table-content {
+    padding: 0px;
+    margin: 0 0 60px;
+}
+
+  .edit-cell,
+  .delete-cell {
+    width: 50%;
+    display: inline-block;
+  }
+
+  .table-list ul li.edit-cell .cell,
+  .table-list ul li.delete-cell .cell {
+    display: inherit;
+    grid-template-columns: inherit;
+  }
+
+  .table-list ul li.edit-cell .cell strong,
+  .table-list ul li.delete-cell .cell strong {
+    display: inline-block;
+    margin: 0 0 0 10px;
+    font-weight: normal;
+  }
+  .hide-nav-btn {
+    display: none;
+  }
+}
