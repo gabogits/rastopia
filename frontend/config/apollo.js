@@ -17,7 +17,6 @@ const DefaultOptions = {
 const HttpLink = createHttpLink({
   uri: "http://localhost:4000/",
   fetch,
-
 });
 // setContextnos va permitir modificar los headers que se envian
 //esta mofificacion a la configuracion de apollo obedece a que se requiere enviar a los
@@ -33,12 +32,14 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
-console.log("conectandose a servidor")
+console.log("conectandose a servidor");
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    addTypename: false,
+  }),
   connectToDevTools: true,
   link: authLink.concat(HttpLink),
   defaultOptions: DefaultOptions,
 });
-console.log("conectado a servidor")
+console.log("conectado a servidor");
 export default client;

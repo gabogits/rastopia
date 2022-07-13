@@ -2,6 +2,10 @@ const productDefs = `
  type SizeGroup {
     size: String
   }
+  type QuantityObj {
+    size: String
+    quantity: Int
+  }
   type Product {
     id: ID
     name: String
@@ -9,7 +13,7 @@ const productDefs = `
     description: String
     category: String
     genre: String
-    quantity: Int
+    quantity: [QuantityObj]
     price: Float
     sizes: [SizeGroup]
     discount: Int
@@ -23,9 +27,9 @@ const productDefs = `
     name: String!
     model: String!
     description: String
-    category: Category!
+    category: String!
     genre: Genre!
-    quantity: Int!
+    quantity: [QuantityObjIn]
     price: Float!
     sizes: [SizesAvailables]
     discount: Int
@@ -36,6 +40,10 @@ const productDefs = `
   }
   input SizesAvailables {
     size: String
+  }
+  input QuantityObjIn {
+    size: String
+    quantity: Int
   }
   enum Size {
     XS
@@ -51,33 +59,20 @@ const productDefs = `
     UNISEX
   }
 
-  enum Category {
-    Gorras
-    Sombreros
-    Playeras
-    Blusas
-    Camisas
-    Chamarras
-    Sueteres
-    Pantalones
-    Vestidos
-    Faldas
-  }
-
   input ProductUpdateInput {
     name: String
     model: String
     description: String
-    category: Category
+    category: String
     genre: Genre
-    quantity: Int
+    quantity: [QuantityObjIn]
     price: Float
     sizes: [SizesAvailables]
     discount: Int
     photos: [photoGroup]
   }
   input ProductFilterInput {
-    category: Category
+    category: String
     genre: Genre
     sizes: [SizesAvailables]
     price: Float

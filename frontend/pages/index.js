@@ -44,7 +44,7 @@ const Home = () => {
             <h2>NUEVA COLECCIÓN YUKIMIYO</h2>
             <h4>
               Descubre lo que hemos preparado para tì. Por tiempo limitado.
-              Envios a domicilio.
+              Envios a domicilio.{" "}
             </h4>
 
             <Link href="catalogo/mujer">
@@ -73,6 +73,21 @@ const Home = () => {
           {productOut.map((item) => (
             <ProductOutstanding key={item.id} item={item} />
           ))}
+        </div>
+      </section>
+      <section className="modu cards-home">
+        <div className="box-title  ">
+          <h3 className="txt-center">Acerca de nosotros</h3>
+          <p className="txt-center">Conoce por que somos la mejor opción</p>
+        </div>
+        <div className="cards-section ">
+          <div>
+            <Link href="/nosotros">
+              <a className="btn-primary btn-color-4 btn-size-1 btn-orientation-auto">
+                Nosotros
+              </a>
+            </Link>
+          </div>
         </div>
       </section>
     </Layout>

@@ -53,18 +53,35 @@ module.exports.orderResMutation = {
       const { id } = item;
       const product = await Product.findById(id);
 
-      if (item.quantity > product.quantity) {
+      const available = product.quantity.find(
+        (elem) => elem.size === item.size
+      );
+
+      if (!available) {
+        throw new Error(`Producto no disponible`);
+      }
+
+      if (item.quantity > available.quantity) {
         throw new Error(
-          `Por el momento solo contamos con ${product.quantity} piezas en stock del articulo ${item.name}. Por favor modifica tu compra`
+          `Por el momento solo contamos con ${available.quantity} piezas en stock del articulo ${item.name}. Por favor modifica tu compra`
         );
       } else {
-        product.quantity = product.quantity - item.quantity;
-        if (product.quantity === 0) {
-          await product.save();
-          //await product.findOneAndDelete({ _id: id });
-        } else {
-          await product.save();
-        }
+        product.quantity = product.quantity.map((p) =>
+          p.size === item.size
+            ? { ...p, quantity: p.quantity - item.quantity }
+            : p
+        );
+        product.sizes = product.sizes.filter((elm) => {
+          if (elm.size === item.size) {
+            if (available.quantity - item.quantity !== 0) {
+              return elm;
+            }
+          } else {
+            return elm;
+          }
+        });
+        product.quantity = product.quantity.filter((p) => p.quantity !== 0);
+        await product.save();
 
         total = total + item.quantity * item.price;
       }

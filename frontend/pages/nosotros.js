@@ -22,7 +22,7 @@ const Checkout = () => {
             <section className="section-format col">
               <div className="section-format-head">
                 <div className="box-title">
-                  <h2>ACERCA DE </h2>
+                  <h2>NOSOTROS</h2>
                 </div>
               </div>
 

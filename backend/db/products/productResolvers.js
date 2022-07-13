@@ -55,6 +55,8 @@ module.exports.productResMutation = {
     return result;
   },
   editProduct: async (_, { id, input }, ctx) => {
+    console.log(id);
+    console.log(input);
     let product = await Product.findById(id);
 
     if (!product) {

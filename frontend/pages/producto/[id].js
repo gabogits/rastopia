@@ -7,6 +7,7 @@ import NumberFormat from "react-number-format";
 import ProductContext from "../../context/productContext";
 import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
 import Loader from "../../components/templates/Loader";
+import { quantityValidation } from "../../helpers";
 const GET_PRODUCT = gql`
   query ($id: ID!) {
     getProduct(id: $id) {
@@ -18,7 +19,10 @@ const GET_PRODUCT = gql`
       price
       discount
       description
-      quantity
+      quantity {
+        size
+        quantity
+      }
       sizes {
         size
       }
@@ -59,6 +63,10 @@ const Product = () => {
     if (data) {
       saveTotalItem(price);
     }
+    return () => {
+      saveCounter(1);
+      setItemSize("");
+    };
   }, [data]);
   if (loading) return <Loader />;
 
@@ -83,24 +91,33 @@ const Product = () => {
 
   const addCart = () => {
     const oneSize = sizesAvailables.indexOf("OS") === 0;
-    if (itemSize !== "" || oneSize) {
-      let item = {
-        name,
-        price,
-        model,
-        id,
-        quantity: counter,
-        totalItem,
-        itemSize: !oneSize ? itemSize : "OS",
-        sizes,
-        photos,
-      };
-      showCart(true);
-      setCart(item);
-      saveErrorCart(null);
-    } else {
+    if (itemSize === "" && !oneSize) {
       saveErrorCart("Debes seleccionar algúna talla");
+      return;
     }
+
+    const sizeSelected = !oneSize ? itemSize : "OS";
+    const errorQuantity = quantityValidation(quantity, sizeSelected, counter);
+    if (errorQuantity) {
+      saveErrorCart(errorQuantity);
+      return;
+    }
+
+    let item = {
+      name,
+      price,
+      model,
+      id,
+      quantity: counter,
+      quantityAvailable: quantity,
+      totalItem,
+      itemSize: !oneSize ? itemSize : "OS",
+      sizes,
+      photos,
+    };
+    showCart(true);
+    setCart(item);
+    saveErrorCart(null);
   };
 
   return (
@@ -133,7 +150,12 @@ const Product = () => {
                   <div className="box-title">
                     <h2> {name}</h2>
                     <p className="m-text">
-                      MOD {model} | DIS {quantity}
+                      MOD {model} | DIS{" "}
+                      {quantity.map((item) => (
+                        <span key={item.size}>
+                          {item.size} : {item.quantity}{" "}
+                        </span>
+                      ))}
                     </p>
                     <h3>
                       {" "}
@@ -186,7 +208,7 @@ const Product = () => {
                       <span>{counter}</span>
                       <button onClick={(e) => counterAction(e, 1)}>+</button>
                     </div>
-                    {quantity > 0 ? (
+                    {quantity.length > 0 ? (
                       <button
                         className=" btn-primary btn-size-flex"
                         onClick={addCart}

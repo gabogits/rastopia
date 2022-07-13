@@ -12,7 +12,10 @@ const GET_PRODUCTS = gql`
       price
       model
       id
-      quantity
+      quantity {
+        size
+        quantity
+      }
       sizes {
         size
       }
@@ -103,7 +106,7 @@ const ProductList = ({ genre }) => {
       }
     };
   }, [shoppingRoute]);
-
+  console.log(products);
   return (
     <div className="cards-section">
       <div className="cards-section-inner cards-3">

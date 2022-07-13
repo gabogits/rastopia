@@ -7,7 +7,6 @@ import Loader from "../../components/templates/Loader";
 import { useDropzone } from "react-dropzone";
 import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
 import { CATEGORIES } from "../../constants";
-import { of } from "zen-observable";
 
 let sizesFilter = [
   { value: "XS", status: false },
@@ -229,12 +228,14 @@ const ProductForm = ({
                   <ul>
                     <FieldArray
                       name="sizes"
-                      render={() => (
+                      render={(arrayHelpers) => (
                         <>
                           <li>
                             <label
                               className={`check-tags ${
-                                values?.sizes?.findIndex((c) => c === "OS") >= 0
+                                values?.sizes?.findIndex(
+                                  (c) => c.size === "OS"
+                                ) >= 0
                                   ? "active"
                                   : ""
                               }`}
@@ -246,18 +247,21 @@ const ProductForm = ({
                                   value={"OS"}
                                   checked={
                                     values?.sizes?.findIndex(
-                                      (c) => c === "OS"
+                                      (c) => c.size === "OS"
                                     ) >= 0
                                   }
                                   onChange={(e) => {
                                     values.sizes = [];
                                     values.quantity = [];
-                                    if (e.target.checked) {
-                                      setOneSize(true);
-                                    } else {
+
+                                    if (!e.target.checked) {
                                       setOneSize(false);
+                                    } else {
+                                      arrayHelpers.push({
+                                        size: "OS",
+                                      });
+                                      setOneSize(true);
                                     }
-                                    props.handleChange(e);
                                     sizesFilter = sizesFilter.map((item) => ({
                                       ...item,
                                       status: false,
@@ -274,7 +278,11 @@ const ProductForm = ({
                               <li key={option.value}>
                                 <label
                                   className={`check-tags ${
-                                    option.status && "active"
+                                    values?.sizes?.findIndex(
+                                      (c) => c.size === option.value
+                                    ) >= 0
+                                      ? "active"
+                                      : ""
                                   }`}
                                 >
                                   <strong>
@@ -284,12 +292,28 @@ const ProductForm = ({
                                       value={option.value}
                                       checked={
                                         values?.sizes?.findIndex(
-                                          (c) => c === option.value
+                                          (c) => c.size === option.value
                                         ) >= 0
                                       }
                                       onChange={(e) => {
-                                        onChangeValueChecks(e);
-                                        props.handleChange(e);
+                                        const exist = values.sizes.find(
+                                          (c) => c.size === option.value
+                                        );
+                                        if (exist) {
+                                          arrayHelpers.remove(
+                                            values?.sizes?.findIndex(
+                                              (c) => c.size === option.value
+                                            )
+                                          );
+                                          values.quantity =
+                                            values.quantity.filter(
+                                              (q) => q.size !== option.value
+                                            );
+                                        } else {
+                                          arrayHelpers.push({
+                                            size: option.value,
+                                          });
+                                        }
                                       }}
                                     />
                                   </strong>
@@ -311,8 +335,8 @@ const ProductForm = ({
                   render={(arrayHelpers) => (
                     <>
                       {values.sizes.map((item, index) => (
-                        <div key={item} className="field">
-                          <label>Cantidad {item}</label>
+                        <div key={item.size} className="field">
+                          <label>Cantidad {item.size}</label>
 
                           <input
                             type="number"
@@ -321,12 +345,12 @@ const ProductForm = ({
                             name={`quantity`}
                             onChange={(e) => {
                               const exist = values.quantity.find(
-                                (c) => c.size === item
+                                (c) => c.size === item.size
                               );
                               if (exist) {
                                 if (parseInt(e.target.value) > 0) {
                                   arrayHelpers.replace(index, {
-                                    size: item,
+                                    size: item.size,
 
                                     quantity: parseInt(e.target.value),
                                   });
@@ -336,7 +360,7 @@ const ProductForm = ({
                               } else {
                                 if (parseInt(e.target.value) > 0) {
                                   arrayHelpers.push({
-                                    size: item,
+                                    size: item.size,
                                     quantity: parseInt(e.target.value),
                                   });
                                 }
@@ -344,7 +368,7 @@ const ProductForm = ({
                             }}
                             value={
                               values?.quantity?.find(
-                                (element) => element.size === item
+                                (element) => element.size === item.size
                               )?.quantity
                             }
                           />

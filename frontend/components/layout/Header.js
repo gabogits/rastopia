@@ -5,9 +5,8 @@ import ProductContext from "../../context/productContext";
 import useAuth from "../../context/authState";
 import { itemsBag } from "../../helpers/";
 const Header = () => {
-  const { cart, resetProductState, showCart, openCart } = useContext(
-    ProductContext
-  );
+  const { cart, resetProductState, showCart, openCart } =
+    useContext(ProductContext);
   const { logout, user, idUser } = useAuth();
 
   const logoutActions = async () => {
@@ -22,7 +21,10 @@ const Header = () => {
           <div className="logo">
             <figure>
               <Link href="/">
-                <a><span className="logo-desk">Yukimiyo</span><span className="logo-mobile">Y</span> </a>
+                <a>
+                  <span className="logo-desk">Rastopia</span>
+                  <span className="logo-mobile">R</span>{" "}
+                </a>
               </Link>
             </figure>
           </div>

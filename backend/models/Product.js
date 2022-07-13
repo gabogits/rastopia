@@ -15,7 +15,7 @@ const ProductSchema = moongose.Schema({
     require: false,
   },
   quantity: {
-    type: Number,
+    type: Array,
     require: true,
   },
   price: {
@@ -45,9 +45,7 @@ const ProductSchema = moongose.Schema({
   created: {
     type: Date,
     default: Date.now(),
-  }
+  },
 });
-
-
 
 module.exports = moongose.model("Product", ProductSchema);

@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import ProductContext from "./productContext";
 import ProductReducer from "./productReducer";
 
@@ -23,6 +23,7 @@ import {
   ORDERS_NOT_RESULTS,
   RESET_ORDERS,
   SELECT_STATUS_ORDER,
+  SET_CART_STORAGE,
 } from "../types";
 import { PRICE_INIT_VALUE } from "../helpers";
 const ProductState = (props) => {
@@ -99,13 +100,24 @@ const ProductState = (props) => {
       type: REMOVE_CART_ITEM,
       payload: product.id,
     });
+
     dispatch({
       type: CART_SET,
       payload: product,
     });
+    localStorage.setItem("cart", JSON.stringify([...state.cart, product]));
   };
-
+  const setCartStorage = (value) => {
+    dispatch({
+      type: SET_CART_STORAGE,
+      payload: value,
+    });
+  };
   const removeItemCart = (id) => {
+    const newCart = state.cart.filter((item) => item.id !== id);
+
+    localStorage.setItem("cart", JSON.stringify(newCart));
+
     dispatch({
       type: REMOVE_CART_ITEM,
       payload: id,
@@ -113,6 +125,10 @@ const ProductState = (props) => {
   };
 
   const updateItemCart = (product) => {
+    const cartUpdated = state.cart.map((item) =>
+      item.id === product.id ? (item = product) : item
+    );
+    localStorage.setItem("cart", JSON.stringify(cartUpdated));
     dispatch({
       type: UPDATE_CART_ITEM,
       payload: product,
@@ -120,6 +136,8 @@ const ProductState = (props) => {
   };
 
   const resetCart = () => {
+    localStorage.removeItem("cart");
+    localStorage.clear();
     dispatch({
       type: RESET_CART,
     });
@@ -179,6 +197,8 @@ const ProductState = (props) => {
   };
 
   const resetProductState = () => {
+    localStorage.removeItem("cart");
+    localStorage.clear();
     dispatch({
       type: RESET_PRODUCT,
     });
@@ -196,6 +216,14 @@ const ProductState = (props) => {
       payload: value,
     });
   };
+
+  useEffect(() => {
+    const cartStorage = JSON.parse(localStorage.getItem("cart"));
+    if (state.cart.length === 0 && cartStorage) {
+      setCartStorage(cartStorage);
+    }
+  }, []);
+
   return (
     <ProductContext.Provider
       value={{

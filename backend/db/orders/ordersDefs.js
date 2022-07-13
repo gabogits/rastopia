@@ -28,6 +28,7 @@ const ordersDefs = `type Order {
     PENDIENTE
     ENVIADO
     ENTREGADO
+    ERROR
   }
   input ItemOrderInput {
     id: ID

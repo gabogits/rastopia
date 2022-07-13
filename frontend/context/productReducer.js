@@ -19,6 +19,7 @@ import {
   ORDERS_NOT_RESULTS,
   RESET_ORDERS,
   SELECT_STATUS_ORDER,
+  SET_CART_STORAGE,
 } from "../types";
 
 const reducer = (state, action) => {
@@ -55,6 +56,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         cart: [...state.cart, action.payload],
+      };
+    case SET_CART_STORAGE:
+      return {
+        ...state,
+        cart: action.payload,
       };
     case UPDATE_CART_ITEM:
       return {

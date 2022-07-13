@@ -21,7 +21,10 @@ const GET_PRODUCT = gql`
       price
       discount
       description
-      quantity
+      quantity {
+        size
+        quantity
+      }
       sizes {
         size
       }
@@ -44,7 +47,10 @@ const EDIT_PRODUCT = gql`
       price
       discount
       description
-      quantity
+      quantity {
+        size
+        quantity
+      }
       sizes {
         size
       }
@@ -95,7 +101,7 @@ const updateProduct = () => {
 
   const submitProductAction = async (values, files) => {
     saveLoader(true);
-
+    console.log("values", values);
     let {
       name,
       model,
@@ -111,17 +117,6 @@ const updateProduct = () => {
 
     onSubmitImage(files, values.name, async (result) => {
       try {
-        sizes = await sizes.map((item) => {
-          return {
-            size: item.size ? item.size : item,
-          };
-        });
-
-        photos = await photos.map((item) => {
-          return {
-            photo: item.photo,
-          };
-        });
         await editProduct({
           variables: {
             id,
@@ -166,7 +161,7 @@ const updateProduct = () => {
   };
   const { getProduct } = data;
   console.log(getProduct);
-  getProduct.sizes = getProduct.sizes.map((item) => item.size);
+
   return (
     <Layout>
       <section className="form top-bottom-space">

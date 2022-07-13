@@ -3,14 +3,29 @@ import ProductContext from "../../context/productContext";
 import NumberFormat from "react-number-format";
 import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
 import Link from "next/link";
+import UpdateError from "../product/UpdateError";
+import { quantityValidation } from "../../helpers";
+import Error from "../templates/Error";
+
 const CartItemDetail = ({ item }) => {
   const { removeItemCart, updateItemCart } = useContext(ProductContext);
-  const { name, price, model, id, quantity, itemSize, sizes, photos } = item;
+  const {
+    name,
+    price,
+    model,
+    id,
+    quantity,
+    itemSize,
+    sizes,
+    photos,
+    quantityAvailable,
+  } = item;
 
   const [counter, saveCounter] = useState(quantity);
   const [totalItemDetail, saveTotalItemDetail] = useState(price * quantity);
   const [itemSizeDetail, setItemSizeDetail] = useState(itemSize);
   const [editSize, saveEditSize] = useState(false);
+  const [errorCart, saveErrorCart] = useState(null);
   const counterAction = (e, value) => {
     e.preventDefault();
 
@@ -30,37 +45,56 @@ const CartItemDetail = ({ item }) => {
 
   const sizesAvailables = sizes.map((item) => item.size);
 
+  const validationUpdateSize = (value) => {
+    const errorQuantity = quantityValidation(quantityAvailable, value, counter);
+
+    if (errorQuantity) {
+      saveErrorCart(errorQuantity);
+      return;
+    }
+
+    setItemSizeDetail(value);
+  };
+  const validationUpdateQuantity = (e) => {
+    const errorQuantity = quantityValidation(
+      quantityAvailable,
+      itemSizeDetail,
+      counter + 1
+    );
+
+    if (errorQuantity) {
+      saveErrorCart(errorQuantity);
+      return;
+    }
+
+    counterAction(e, 1);
+  };
   const updateQuantity = () => {
-    let item = {
-      name,
-      price,
-      model,
-      id,
+    console.log(counter);
+    let itemUpdated = {
+      ...item,
       quantity: counter,
+      quantityAvailable: quantityAvailable,
       totalItem: totalItemDetail,
       itemSize: itemSizeDetail,
-      sizes,
-      photos,
     };
 
-    updateItemCart(item);
+    updateItemCart(itemUpdated);
+    saveErrorCart(null);
   };
 
   const updateSize = () => {
-    let item = {
-      name,
-      price,
-      model,
-      id,
+    let itemUpdated = {
+      ...item,
       quantity: counter,
+      quantityAvailable: quantityAvailable,
       totalItem: totalItemDetail,
       itemSize: itemSizeDetail,
-      sizes,
-      photos,
     };
 
-    updateItemCart(item);
+    updateItemCart(itemUpdated);
     saveEditSize(false);
+    saveErrorCart(null);
   };
   useEffect(() => {
     if (quantity !== counter || itemSizeDetail !== itemSize) {
@@ -140,7 +174,7 @@ const CartItemDetail = ({ item }) => {
                             }`}
                           >
                             <button
-                              onClick={() => setItemSizeDetail(item.value)}
+                              onClick={() => validationUpdateSize(item.value)}
                             >
                               {item.value}
                             </button>
@@ -170,9 +204,10 @@ const CartItemDetail = ({ item }) => {
             <div className="number-items">
               <button onClick={(e) => counterAction(e, -1)}>-</button>
               <span>{counter}</span>
-              <button onClick={(e) => counterAction(e, 1)}>+</button>
+              <button onClick={(e) => validationUpdateQuantity(e, 1)}>+</button>
             </div>
           </div>
+          {errorCart && <Error msg={errorCart} />}
         </li>
 
         <li>
@@ -188,6 +223,8 @@ const CartItemDetail = ({ item }) => {
           </div>
         </li>
       </ul>
+
+      <UpdateError msgResp={errorCart} />
     </div>
   );
 };

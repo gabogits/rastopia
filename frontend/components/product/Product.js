@@ -9,9 +9,11 @@ const Product = ({ item }) => {
   const previewproduct = photos[0].photo;
   const { user } = useAuth();
   return (
-    <div className={`card-item ${quantity === 0  ? "disabled-item" : ""}`}>
+    <div
+      className={`card-item ${quantity.length === 0 ? "disabled-item" : ""}`}
+    >
       <figure className="card-item-img">
-      {quantity === 0 && (
+        {quantity.length === 0 && (
           <div className="tag-absolute">Producto agotado</div>
         )}
         <Link href="/producto/[id]" as={`/producto/${id}`}>
@@ -37,14 +39,12 @@ const Product = ({ item }) => {
             prefix={"$ "}
           />
         </p>
-       
-        {user &&
-          user.role ===
-            "admin" && (
-              <Link href="/editar-producto/[id]" as={`/editar-producto/${id}`}>
-                <a className="btn-clear-style">Editar producto</a>
-              </Link>
-            )}
+
+        {user && user.role === "admin" && (
+          <Link href="/editar-producto/[id]" as={`/editar-producto/${id}`}>
+            <a className="btn-clear-style">Editar producto</a>
+          </Link>
+        )}
       </div>
     </div>
   );

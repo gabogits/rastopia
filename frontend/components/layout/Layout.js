@@ -7,7 +7,7 @@ const Layout = (props) => {
   return (
     <>
       <Head>
-        <title>Yukimiyo</title>
+        <title>Rastopia</title>
         <link rel="icon" href="favicon.ico" />
         <meta
           name="viewport"
@@ -17,11 +17,8 @@ const Layout = (props) => {
           href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,600;0,700;0,900;1,400&display=swap"
           rel="stylesheet"
         />
-        <meta
-          name="description"
-          content="Yukimiyo: Renueva tu estilo."
-        />
-        <title>Yukimiyo: Renueva tu estilo. </title>
+        <meta name="description" content="Rastopia" />
+        <title>Rastopia. </title>
       </Head>
 
       <main>

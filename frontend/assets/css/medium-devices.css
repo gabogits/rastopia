@@ -191,6 +191,10 @@
     margin: inherit;
     max-width: inherit;
   }
+  .container-header {
+    grid-template-columns: 50px calc(100% - 50px);
+    padding: 0 20px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -310,10 +314,5 @@
   .cards-section .cards-section-inner {
     max-width: 550px;
     margin: 0 auto;
-  }
-
-  .container-header {
-    grid-template-columns: 50px calc(100% - 50px);
-    padding: 0 20px;
   }
 }

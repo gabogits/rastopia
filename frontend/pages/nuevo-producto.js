@@ -57,11 +57,7 @@ const NewProductComponent = () => {
       onSubmitImage(files, values.name, async (result) => {
         try {
           values.photos = result;
-          values.sizes = await values.sizes.map((item) => {
-            return {
-              size: item,
-            };
-          });
+
           console.log(values);
 
           await newProduct({
