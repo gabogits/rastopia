@@ -20,9 +20,11 @@ import {
   RESET_ORDERS,
   SELECT_STATUS_ORDER,
   SET_CART_STORAGE,
+  DELETE_UPDATE_CART_ITEM,
 } from "../types";
 
 const reducer = (state, action) => {
+  console.log(action.payload);
   switch (action.type) {
     case SAVE_PRODUCTS:
       return {
@@ -66,14 +68,18 @@ const reducer = (state, action) => {
       return {
         ...state,
         cart: state.cart.map((item) =>
-          item.id === action.payload.id ? (item = action.payload) : item
+          item.nanoId === action.payload.nanoId ? (item = action.payload) : item
         ),
       };
-
+    case DELETE_UPDATE_CART_ITEM:
+      return {
+        ...state,
+        cart: action.payload,
+      };
     case REMOVE_CART_ITEM:
       return {
         ...state,
-        cart: state.cart.filter((item) => item.id !== action.payload),
+        cart: state.cart.filter((item) => item.nanoId !== action.payload),
       };
     case SET_SHOPPING_ROUTE:
       return {

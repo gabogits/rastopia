@@ -8,7 +8,7 @@ import { quantityValidation } from "../../helpers";
 import Error from "../templates/Error";
 
 const CartItemDetail = ({ item }) => {
-  const { removeItemCart, updateItemCart } = useContext(ProductContext);
+  const { removeItemCart, updateItemCart, cart } = useContext(ProductContext);
   const {
     name,
     price,
@@ -19,12 +19,14 @@ const CartItemDetail = ({ item }) => {
     sizes,
     photos,
     quantityAvailable,
+    nanoId,
   } = item;
 
   const [counter, saveCounter] = useState(quantity);
   const [totalItemDetail, saveTotalItemDetail] = useState(price * quantity);
   const [itemSizeDetail, setItemSizeDetail] = useState(itemSize);
   const [editSize, saveEditSize] = useState(false);
+  const [editQuantity, saveEditQuantity] = useState(false);
   const [errorCart, saveErrorCart] = useState(null);
   const counterAction = (e, value) => {
     e.preventDefault();
@@ -44,14 +46,32 @@ const CartItemDetail = ({ item }) => {
   ];
 
   const sizesAvailables = sizes.map((item) => item.size);
-
+  const saveEditHandle = () => {
+    saveEditQuantity(true);
+    saveCounter(quantity);
+  };
   const validationUpdateSize = (value) => {
-    const errorQuantity = quantityValidation(quantityAvailable, value, counter);
+    const itemSizeExist = cart.find(
+      (item) => item.id === id && item.itemSize === value
+    );
+    let itemsNum;
+
+    if (itemSizeExist) {
+      itemsNum = itemSizeExist.quantity + counter;
+    } else {
+      itemsNum = counter;
+    }
+    const errorQuantity = quantityValidation(
+      quantityAvailable,
+      value,
+      itemsNum
+    );
 
     if (errorQuantity) {
       saveErrorCart(errorQuantity);
       return;
     }
+    console.log("si pasa la validacion", value);
 
     setItemSizeDetail(value);
   };
@@ -77,6 +97,7 @@ const CartItemDetail = ({ item }) => {
       quantityAvailable: quantityAvailable,
       totalItem: totalItemDetail,
       itemSize: itemSizeDetail,
+      sizeChanged: false,
     };
 
     updateItemCart(itemUpdated);
@@ -90,6 +111,7 @@ const CartItemDetail = ({ item }) => {
       quantityAvailable: quantityAvailable,
       totalItem: totalItemDetail,
       itemSize: itemSizeDetail,
+      sizeChanged: true,
     };
 
     updateItemCart(itemUpdated);
@@ -97,8 +119,10 @@ const CartItemDetail = ({ item }) => {
     saveErrorCart(null);
   };
   useEffect(() => {
-    if (quantity !== counter || itemSizeDetail !== itemSize) {
+    if (quantity !== counter) {
       updateQuantity();
+    }
+    if (itemSizeDetail !== itemSize) {
       updateSize();
     }
   }, [counter, itemSizeDetail]);
@@ -139,7 +163,7 @@ const CartItemDetail = ({ item }) => {
 
             <button
               className="btn-clear-style"
-              onClick={() => removeItemCart(id)}
+              onClick={() => removeItemCart(nanoId)}
             >
               Eliminar
             </button>
@@ -200,13 +224,31 @@ const CartItemDetail = ({ item }) => {
           )}
         </li>
         <li>
-          <div className="resume-table-3 resume-qty">
-            <div className="number-items">
-              <button onClick={(e) => counterAction(e, -1)}>-</button>
-              <span>{counter}</span>
-              <button onClick={(e) => validationUpdateQuantity(e, 1)}>+</button>
+          {editQuantity ? (
+            <div className="resume-table-3 resume-qty">
+              <div className="number-items">
+                <button onClick={(e) => counterAction(e, -1)}>-</button>
+                <span>{quantity}</span>
+                <button onClick={(e) => validationUpdateQuantity(e, 1)}>
+                  +
+                </button>
+              </div>
+              <div
+                onClick={() => saveEditQuantity(false)}
+                className="btn-clear-style"
+              >
+                Aceptar
+              </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <p>Cantidad {quantity} </p>
+              <div className="btn-blue-style" onClick={() => saveEditHandle()}>
+                Editar Cantidad
+              </div>
+            </>
+          )}
+
           {errorCart && <Error msg={errorCart} />}
         </li>
 
@@ -214,7 +256,7 @@ const CartItemDetail = ({ item }) => {
           <div className="resume-table-4 resume-unit-price">
             <p>
               <NumberFormat
-                value={totalItemDetail}
+                value={quantity * price}
                 displayType={"text"}
                 thousandSeparator={true}
                 prefix={"$ "}

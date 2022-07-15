@@ -4,6 +4,9 @@ import Error from "../../components/templates/Error";
 import { useRouter } from "next/router";
 import { gql, useQuery } from "@apollo/client";
 import NumberFormat from "react-number-format";
+
+import { nanoid } from "nanoid";
+
 import ProductContext from "../../context/productContext";
 import { CloudinaryContext, Image, Transformation } from "cloudinary-react";
 import Loader from "../../components/templates/Loader";
@@ -114,6 +117,7 @@ const Product = () => {
       itemSize: !oneSize ? itemSize : "OS",
       sizes,
       photos,
+      nanoId: nanoid(10),
     };
     showCart(true);
     setCart(item);

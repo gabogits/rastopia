@@ -24,8 +24,9 @@ import {
   RESET_ORDERS,
   SELECT_STATUS_ORDER,
   SET_CART_STORAGE,
+  DELETE_UPDATE_CART_ITEM,
 } from "../types";
-import { PRICE_INIT_VALUE } from "../helpers";
+import { PRICE_INIT_VALUE, quantityValidation } from "../helpers";
 const ProductState = (props) => {
   const initialState = {
     products: [],
@@ -96,16 +97,25 @@ const ProductState = (props) => {
   };
 
   const setCart = (product) => {
-    dispatch({
-      type: REMOVE_CART_ITEM,
-      payload: product.id,
-    });
-
-    dispatch({
-      type: CART_SET,
-      payload: product,
-    });
-    localStorage.setItem("cart", JSON.stringify([...state.cart, product]));
+    const itemSizeExist = state.cart.find(
+      (item) => item.id === product.id && item.itemSize === product.itemSize
+    );
+    if (itemSizeExist) {
+      dispatch({
+        type: UPDATE_CART_ITEM,
+        payload: { ...product, nanoId: itemSizeExist.nanoId },
+      });
+      const cartUpdated = state.cart.map((item) =>
+        item.nanoId === product.nanoId ? (item = product) : item
+      );
+      localStorage.setItem("cart", JSON.stringify(cartUpdated));
+    } else {
+      dispatch({
+        type: CART_SET,
+        payload: product,
+      });
+      localStorage.setItem("cart", JSON.stringify([...state.cart, product]));
+    }
   };
   const setCartStorage = (value) => {
     dispatch({
@@ -113,26 +123,53 @@ const ProductState = (props) => {
       payload: value,
     });
   };
-  const removeItemCart = (id) => {
-    const newCart = state.cart.filter((item) => item.id !== id);
+  const removeItemCart = (nanoId) => {
+    const newCart = state.cart.filter((item) => item.nanoId !== nanoId);
 
     localStorage.setItem("cart", JSON.stringify(newCart));
 
     dispatch({
       type: REMOVE_CART_ITEM,
-      payload: id,
+      payload: nanoId,
     });
   };
 
   const updateItemCart = (product) => {
-    const cartUpdated = state.cart.map((item) =>
-      item.id === product.id ? (item = product) : item
+    let cartStorageUpdated;
+
+    const itemSizeExist = state.cart.find(
+      (item) => item.id === product.id && item.itemSize === product.itemSize
     );
-    localStorage.setItem("cart", JSON.stringify(cartUpdated));
-    dispatch({
-      type: UPDATE_CART_ITEM,
-      payload: product,
-    });
+
+    if (product.sizeChanged && itemSizeExist) {
+      const cartUpdated = state.cart
+        .filter((item) => item.nanoId !== product.nanoId)
+        .map((item) =>
+          item.nanoId === itemSizeExist.nanoId
+            ? {
+                ...item,
+                quantity: itemSizeExist.quantity + product.quantity,
+                totalItem:
+                  itemSizeExist.price *
+                  (itemSizeExist.quantity + product.quantity),
+              }
+            : item
+        );
+      localStorage.setItem("cart", JSON.stringify(cartUpdated));
+      dispatch({
+        type: DELETE_UPDATE_CART_ITEM,
+        payload: cartUpdated,
+      });
+    } else {
+      cartStorageUpdated = state.cart.map((item) =>
+        item.nanoId === product.nanoId ? (item = product) : item
+      );
+      localStorage.setItem("cart", JSON.stringify(cartStorageUpdated));
+      dispatch({
+        type: UPDATE_CART_ITEM,
+        payload: product,
+      });
+    }
   };
 
   const resetCart = () => {

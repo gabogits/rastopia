@@ -48,7 +48,8 @@ const Orders = () => {
       moreResults();
     }
 
-    if (data) {
+    if (data && data.getOrders) {
+      console.log(data);
       saveOrders(data);
     }
   }, [data, selectStatus]);

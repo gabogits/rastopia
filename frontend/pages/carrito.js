@@ -28,6 +28,7 @@ const ShoppingCart = () => {
     if (cart.length === 0) {
       router.push("/");
     }
+    console.log("actualizandooo");
   }, [cart]);
 
   return (
@@ -51,7 +52,7 @@ const ShoppingCart = () => {
             <div className="resume-content">
               <div className="resume-table-content">
                 {cart.map((item) => (
-                  <CartItemDetail key={item.id} item={item} />
+                  <CartItemDetail key={item.nanoId} item={item} />
                 ))}
               </div>
               <div className="resume-table-bottom">

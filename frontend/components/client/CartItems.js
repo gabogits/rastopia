@@ -26,7 +26,7 @@ const CartItems = () => {
             )}
             <ul>
               {cart.map((item) => (
-                <CartItem key={item.id} item={item} />
+                <CartItem key={item.nanoId} item={item} />
               ))}
             </ul>
           </div>
