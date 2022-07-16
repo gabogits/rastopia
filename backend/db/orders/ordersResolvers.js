@@ -11,6 +11,9 @@ module.exports.orderResQuery = {
     const filter = input.status !== "TODOS" ? { status: input.status } : {};
 
     const orders = await Order.find(filter)
+      .sort({
+        _id: -1,
+      })
       .populate("client")
       .limit(input.limit)
       .skip(input.skip);
@@ -23,7 +26,11 @@ module.exports.orderResQuery = {
 
     const clientID = id ? id : ctx.user.id;
 
-    const orders = await Order.find({ client: clientID }).populate("client");
+    const orders = await Order.find({ client: clientID })
+      .sort({
+        _id: -1,
+      })
+      .populate("client");
     return orders;
   },
   getOrder: async (_, { id }, ctx) => {
@@ -88,7 +95,7 @@ module.exports.orderResMutation = {
     }
 
     input.total = total + 80;
-    //considerar un coso
+
     const orderComplete = await new Order(input);
     await orderComplete.save();
     console.log(orderComplete);

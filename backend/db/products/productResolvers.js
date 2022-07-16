@@ -29,6 +29,9 @@ module.exports.productResQuery = {
     // {genre, category,  price:  'sizes.size': {$in:  sizes.map(item => item.size ) }  }
 
     const products = await Product.find(filter)
+      .sort({
+        _id: -1,
+      })
       .limit(input.limit)
       .skip(input.skip);
 
